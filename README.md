@@ -1,31 +1,48 @@
-Welcome to the Data Warehouse and Analytics Project repository! 🚀
-This project demonstrates a comprehensive data warehousing and analytics solution, from building a data warehouse to generating actionable insights. Designed as a portfolio project, it highlights industry best practices in data engineering and analytics.
-🏗️ Data Architecture
-The data architecture for this project follows Medallion Architecture Bronze, Silver, and Gold layers:
-Bronze Layer: Stores raw data as-is from the source systems. Data is ingested from CSV Files into SQL Server Database.
-Silver Layer: This layer includes data cleansing, standardization, and normalization processes to prepare data for analysis.
-Gold Layer: Houses business-ready data modeled into a star schema required for reporting and analytics.
-📖 Project Overview
-This project involves:
-Data Architecture: Designing a Modern Data Warehouse Using Medallion Architecture Bronze, Silver, and Gold layers.
-ETL Pipelines: Extracting, transforming, and loading data from source systems into the warehouse.
-Data Modeling: Developing fact and dimension tables optimized for analytical queries.
-Analytics & Reporting: Creating SQL-based reports and dashboards for actionable insights.
-🎯 This repository is an excellent resource for professionals and students looking to showcase expertise in:
-SQL Development
-Data Architect
-Data Engineering
-ETL Pipeline Developer
-Data Modeling
-Data Analytics
-🚀 Project Requirements
-Building the Data Warehouse (Data Engineering)
-Objective
-Develop a modern data warehouse using SQL Server to consolidate sales data, enabling analytical reporting and informed decision-making.
+## 🚀 Project Overview
+This project covers:
+- **Data Modeling**: Designing a star/snowflake schema for the warehouse.
+- **ETL Process**: Extract, Transform, Load scripts to populate the warehouse.
+- **Analytical Queries**: Complex queries for reporting and insights.
 
-Specifications
-Data Sources: Import data from two source systems (ERP and CRM) provided as CSV files.
-Data Quality: Cleanse and resolve data quality issues prior to analysis.
-Integration: Combine both sources into a single, user-friendly data model designed for analytical queries.
-Scope: Focus on the latest dataset only; historization of data is not required.
-Documentation: Provide clear documentation of the data model to support both business stakeholders and analytics teams.
+## 📊 Features
+✅ Star schema or snowflake schema design  
+✅ Fact and dimension tables  
+✅ ETL implementation using SQL scripts  
+✅ Analytical queries for common business questions  
+
+## 🔧 Technologies Used
+- **SQL Server** (or MySQL / PostgreSQL, update accordingly)
+- SQL scripts for ETL and analytics
+---
+
+## 📈 How to Use
+Clone the repository:
+Load the schema and data:
+Run the scripts in sql/schema.sql to create tables.
+Run the scripts in sql/etl.sql to load data into the tables.
+Run analytical queries:
+Use the queries in sql/queries.sql or the files in reports/ to generate reports.
+
+📂 Data Sources
+The data used in this project consists of sample datasets that simulate a sales database. It includes data about:
+Customers
+Products
+Sales Transactions
+Time (Date) Dimension
+These data files are included in the data/ directory and are loaded into the data warehouse using ETL scripts.
+
+👤 Author
+Dinesh Sai Palli
+GitHub-
+LinkedIn-https://www.linkedin.com/in/dinesh-sai-825a992a5/
+
+📝 License
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+💡 Future Work
+Add more complex analytical queries
+Integrate BI tools (e.g., Power BI, Tableau) for dashboards
+Optimize queries and indexing for performance
+Automate ETL process using stored procedures or scheduled jobs
+
+ Thank you for checking out this project! If you have any questions or suggestions, feel free to open an issue or contact me.
