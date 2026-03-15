@@ -74,7 +74,7 @@ sql-data-warehouse-project/
 Open `scripts/bronze/proc_load_bronze.sql` and replace the hardcoded `FROM '...'` paths in each `BULK INSERT` statement with the absolute path to the `datasets/` folder on your machine, for example:
 
 ```sql
-FROM 'C:\path\to\sql-data-warehouse-project\datasets\source_crm\cust_info.csv'
+FROM  '<your-local-path>/sql-data-warehouse-project/datasets/source_crm/cust_info.csv'
 ```
 
 ### Step 2 – Execute Scripts in Order
