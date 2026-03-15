@@ -1,0 +1,19 @@
+# OS-generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor/IDE directories
+.vscode/
+.idea/
+*.suo
+*.user
+
+# SQL Server backup / snapshot files
+*.bak
+*.mdf
+*.ldf
+
+# Temporary files
+*.tmp
+*.log
