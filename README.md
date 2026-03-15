@@ -58,7 +58,7 @@ flowchart LR
     S3           -->|"Lookup Keys\n(ddl_gold)"| FS
 
     DC -->|customer_key| FS
-    DP -->|product_key|  FS
+    DP -->|product_key| FS
 ```
 
 ---
