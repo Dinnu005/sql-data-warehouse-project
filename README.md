@@ -6,11 +6,110 @@ This project implements a **SQL Server Data Warehouse** following the **Medallio
 
 ### Architecture
 
+The following diagram illustrates the **Medallion Architecture** data pipeline — from raw source files through to analytics-ready views.
+
+```mermaid
+flowchart LR
+    subgraph SRC["📦 Source Systems"]
+        direction TB
+        CRM[("🗄️ CRM System\ncust_info.csv\nprd_info.csv\nsales_details.csv")]
+        ERP[("🗄️ ERP System\nCUST_AZ12.csv\nLOC_A101.csv\nPX_CAT_G1V2.csv")]
+    end
+
+    subgraph BRZ["🥉 Bronze Layer — Raw Staging"]
+        direction TB
+        B1[bronze.crm_cust_info]
+        B2[bronze.crm_prd_info]
+        B3[bronze.crm_sales_details]
+        B4[bronze.erp_cust_az12]
+        B5[bronze.erp_loc_a101]
+        B6[bronze.erp_px_cat_g1v2]
+    end
+
+    subgraph SLV["🥈 Silver Layer — Cleansed & Transformed"]
+        direction TB
+        S1[silver.crm_cust_info]
+        S2[silver.crm_prd_info]
+        S3[silver.crm_sales_details]
+        S4[silver.erp_cust_az12]
+        S5[silver.erp_loc_a101]
+        S6[silver.erp_px_cat_g1v2]
+    end
+
+    subgraph GLD["🥇 Gold Layer — Star Schema / Analytics"]
+        direction TB
+        DC["📋 gold.dim_customers"]
+        DP["📋 gold.dim_products"]
+        FS["📊 gold.fact_sales"]
+    end
+
+    CRM -->|"BULK INSERT\n(proc_load_bronze)"| B1 & B2 & B3
+    ERP -->|"BULK INSERT\n(proc_load_bronze)"| B4 & B5 & B6
+
+    B1 -->|"Cleanse\n(proc_load_silver)"| S1
+    B2 -->|"Cleanse\n(proc_load_silver)"| S2
+    B3 -->|"Cleanse\n(proc_load_silver)"| S3
+    B4 -->|"Cleanse\n(proc_load_silver)"| S4
+    B5 -->|"Cleanse\n(proc_load_silver)"| S5
+    B6 -->|"Cleanse\n(proc_load_silver)"| S6
+
+    S1 & S4 & S5 -->|"Join & Enrich\n(ddl_gold)"| DC
+    S2 & S6      -->|"Join & Enrich\n(ddl_gold)"| DP
+    S3           -->|"Lookup Keys\n(ddl_gold)"| FS
+
+    DC -->|customer_key| FS
+    DP -->|product_key|  FS
 ```
-Source Systems                 Data Warehouse Layers
-──────────────                 ─────────────────────────────────────────────
- CRM System   ──┐              Bronze (Raw)  →  Silver (Cleansed)  →  Gold (Analytics)
- ERP System   ──┘              Staging tables    Transformed tables    Star-schema views
+
+---
+
+## 🗂️ Data Model
+
+The **Gold layer** exposes a classic **Star Schema** optimised for analytical queries. Surrogate keys are generated with `ROW_NUMBER()` so downstream BI tools have stable integer keys.
+
+```mermaid
+erDiagram
+    dim_customers {
+        int        customer_key    PK "Surrogate key"
+        int        customer_id        "Source CRM id"
+        nvarchar50 customer_number    "CRM natural key"
+        nvarchar50 first_name
+        nvarchar50 last_name
+        nvarchar50 country
+        nvarchar50 marital_status
+        nvarchar50 gender             "CRM primary; ERP fallback"
+        date       birthdate          "From ERP"
+        date       create_date
+    }
+
+    dim_products {
+        int        product_key     PK "Surrogate key"
+        int        product_id         "Source CRM id"
+        nvarchar50 product_number     "CRM natural key"
+        nvarchar50 product_name
+        nvarchar50 category_id
+        nvarchar50 category           "From ERP"
+        nvarchar50 subcategory        "From ERP"
+        nvarchar50 maintenance        "From ERP"
+        int        cost
+        nvarchar50 product_line
+        date       start_date
+    }
+
+    fact_sales {
+        nvarchar50 order_number    PK "Business key"
+        int        product_key     FK
+        int        customer_key    FK
+        date       order_date
+        date       shipping_date
+        date       due_date
+        int        sales_amount
+        int        quantity
+        int        price
+    }
+
+    dim_customers ||--o{ fact_sales : "customer_key"
+    dim_products  ||--o{ fact_sales : "product_key"
 ```
 
 ---
